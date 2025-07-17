@@ -358,6 +358,7 @@
 
         // --- AUTENTICAÇÃO ---
         const performSilentAuth = async () => {
+            const loginBtn = document.getElementById('login-submit-btn');
             try {
                 const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
                 if (token) {
@@ -366,12 +367,12 @@
                     await signInAnonymously(auth);
                 }
             } catch (error) {
-                console.error("Erro durante a autenticação silenciosa:", error);
-                const loginBtn = document.getElementById('login-submit-btn');
+                console.error("Erro na autenticação:", error);
                 if (loginBtn) {
                     loginBtn.innerHTML = '<i class="fas fa-exclamation-circle mr-2"></i> Falha na Conexão';
                 }
-                loginError.textContent = "Falha na autenticação com o servidor.";
+                // MODIFICADO: Exibe o erro detalhado para o usuário.
+                loginError.textContent = `Erro de autenticação: ${error.message}`;
             }
         };
         
@@ -388,7 +389,7 @@
                 currentUser = null;
                 if (loginBtn) {
                     loginBtn.disabled = true;
-                    loginBtn.innerHTML = '<i class="fas fa-exclamation-circle mr-2"></i> Falha na Conexão';
+                    // Não mostra erro aqui, pois a falha é tratada no performSilentAuth
                 }
                 loginScreen.classList.remove('hidden');
                 mainPanel.classList.add('hidden');
